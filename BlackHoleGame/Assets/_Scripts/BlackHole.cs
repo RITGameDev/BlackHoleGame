@@ -7,7 +7,6 @@ using UnityEngine;
 /// Require a Rigidbody2D component so that the GetComponent
 /// will always work
 /// </summary>
-[RequireComponent(typeof(Rigidbody2D))]
 public class BlackHole : MonoBehaviour {
     [SerializeField]
     private float lifetime = 5f;    // How long it wll take for this gameobject to go inactive
@@ -15,17 +14,7 @@ public class BlackHole : MonoBehaviour {
     private float range = 1f;    // How much force we want to add to this
     [SerializeField]
     private float smoothing = 1f;   // How much smoothing is added to the movement of this object
-    private Rigidbody2D rb;     // The 2D rigidbody component of this object
     private IEnumerator currentMovement;
-
-    /// <summary>
-    /// Get the reference to the rigidbody
-    /// </summary>
-    private void Awake()
-    {
-        // Get the 2D rigidbody component and add an impulse force to it
-        rb = GetComponent<Rigidbody2D>();
-    }
 
     /// <summary>
     /// Set the target of movement to whatever directoin we are facing
@@ -75,7 +64,7 @@ public class BlackHole : MonoBehaviour {
         while((transform.position - target).magnitude > 0.5f)
         {
             // Move this rigidbody towards that positoin
-            rb.MovePosition(Vector3.Lerp(transform.position, target, Time.deltaTime * smoothing));
+            transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime * smoothing);
             // Wait until the next frame, so that we don't studder
             yield return null;
         }    
