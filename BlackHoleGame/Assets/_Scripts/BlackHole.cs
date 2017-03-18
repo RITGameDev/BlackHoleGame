@@ -16,11 +16,15 @@ public class BlackHole : MonoBehaviour {
     private float smoothing = 1f;   // How much smoothing is added to the movement of this object
     private IEnumerator currentMovement;
 
+
     /// <summary>
     /// Set the target of movement to whatever directoin we are facing
     /// </summary>
-    private void OnEnable()
+    public void EnableBlackHole()
     {
+        // Add this object to the black hole manager
+        BlackHoleManager.currentBlackHoles.BlackHoles.Add(this);
+
         // Make the target in front of us by the range
         Vector3 target = transform.position + transform.up * range;
 
@@ -75,6 +79,9 @@ public class BlackHole : MonoBehaviour {
     /// </summary>
     private void DisableMe()
     {
+        // Remove myself from the list of black holes
+        BlackHoleManager.currentBlackHoles.BlackHoles.Remove(this);
+        // Set this object as inactive
         gameObject.SetActive(false);
     }
 

@@ -8,8 +8,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour {
 
+    #region Fields
     [SerializeField]
-    private float acceleration = 1f;
+    private float playerWeight = 1f;
     [SerializeField]
     private float maxSpeed = 1f;
     [SerializeField]
@@ -29,27 +30,25 @@ public class PlayerMovement : MonoBehaviour {
     private Vector2 position;
     private Vector2 velocity;
     private Vector2 steeringForce;
+    #endregion
 
-    private Stack<Vector2> attractedTo;
-    private Stack<Vector2> fleeFrom;
-
-	/// <summary>
+    /// <summary>
     /// Get the proper components
     /// </summary>
-	void Start ()
+    void Start ()
     {
         // Get the 2D rigidbody component of this object
         rb = GetComponent<Rigidbody2D>();
 
         // Initialize the stacks that hold the things that we should be attracted to
-        attractedTo = new Stack<Vector2>();
-        fleeFrom = new Stack<Vector2>();
+        //attractedTo = new Stack<Vector2>();
+        //fleeFrom = new Stack<Vector2>();
     }
 	
 	/// <summary>
     /// Check for input from the player
     /// </summary>
-	void FixedUpdate ()
+	void Update ()
     {
         // Reset the move force
         moveForce = Vector2.zero;
@@ -63,8 +62,7 @@ public class PlayerMovement : MonoBehaviour {
         CalculateAttractions();
 
         // Set the velocity to what we calculated
-        //rb.velocity = Vector2.ClampMagnitude(moveForce, maxSpeed);
-        rb.velocity = moveForce.normalized * maxSpeed;
+        rb.velocity = moveForce.normalized * maxSpeed * Time.deltaTime;
     }
 
 
@@ -78,8 +76,8 @@ public class PlayerMovement : MonoBehaviour {
         moveY = Input.GetAxis(verticalInputString);
 
         // calculate the x and y directions
-        moveForce.x += moveX * acceleration;
-        moveForce.y += moveY * acceleration;
+        moveForce.x += moveX * playerWeight;
+        moveForce.y += moveY * playerWeight;
     }
 
     /// <summary>
@@ -88,30 +86,16 @@ public class PlayerMovement : MonoBehaviour {
     private void CalculateAttractions()
     {
         // how many things do we want to be attracted towards?
-        int count = attractedTo.Count;
+        int count = BlackHoleManager.currentBlackHoles.BlackHoles.Count;
 
         // Seek towards all the objects that we have collided with
         for(int i = 0; i < count; i++)
         {
             // Seet the attracted position, and pop it off the stack as we do so
-            moveForce += Seek(attractedTo.Pop());
+            moveForce += Seek(BlackHoleManager.currentBlackHoles.BlackHoles[i].transform.position) * seekWeight * Time.deltaTime;
         }
 
         // Flee from all the ojbects that we want to avoid
-    }
-
-    /// <summary>
-    /// If we are colliding with a black hole object, then we want to seek towards it
-    /// </summary>
-    /// <param name="collision"></param>
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        // If we are colliding with a black hole....
-        if (collision.CompareTag("BlackHole"))
-        {
-            // We want to be attracted to it, so add it to our calculations to be completed
-            attractedTo.Push(collision.transform.position);
-        }
     }
 
     /// <summary>
@@ -123,11 +107,16 @@ public class PlayerMovement : MonoBehaviour {
     public Vector2 Seek(Vector2 targetPos)
     {
         // Calculate desired velocity
-        desiredVelocity = targetPos - position;
+        desiredVelocity = (targetPos - position);
+
+        // In order to get faster as we get closer, because the distance will get smaller, thus
+        // resulting in a larger multiplier
+        desiredVelocity *= (1 / desiredVelocity.magnitude);
 
         // Scale the magnitude to teh max speed
         // so that I move as quickly as possible
         desiredVelocity.Normalize();
+
         desiredVelocity *= maxSpeed;
 
         steeringForce = desiredVelocity - velocity;

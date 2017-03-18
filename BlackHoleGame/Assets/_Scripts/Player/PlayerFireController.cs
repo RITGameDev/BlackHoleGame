@@ -46,6 +46,8 @@ public class PlayerFireController : MonoBehaviour {
             // Set the object as active
             bullet.SetActive(true);
 
+            bullet.GetComponent<BlackHole>().EnableBlackHole();
+
             // The last time that we fired is now, so set the time since last fire to 0
             timeSinceLastFire = 0f;
             Debug.Log("Fire!");

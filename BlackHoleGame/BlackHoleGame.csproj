@@ -73,12 +73,11 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\_Scripts\BlackHole.cs" />
+    <Compile Include="Assets\_Scripts\BlackHoleManager.cs" />
+    <Compile Include="Assets\_Scripts\Player\AimRotation.cs" />
     <Compile Include="Assets\_Scripts\Player\ObjectPooler.cs" />
     <Compile Include="Assets\_Scripts\Player\PlayerFireController.cs" />
     <Compile Include="Assets\_Scripts\Player\PlayerMovement.cs" />
