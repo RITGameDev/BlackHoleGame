@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour {
     private float seekWeight = 1f;
     [SerializeField]
     private float fleeWeight = 1f;
+    [SerializeField]
+    private float wrapPadding = 0.5f;
 
     private string horizontalInputString = "Horizontal";
     private string verticalInputString = "Vertical" ;
@@ -39,10 +41,6 @@ public class PlayerMovement : MonoBehaviour {
     {
         // Get the 2D rigidbody component of this object
         rb = GetComponent<Rigidbody2D>();
-
-        // Initialize the stacks that hold the things that we should be attracted to
-        //attractedTo = new Stack<Vector2>();
-        //fleeFrom = new Stack<Vector2>();
     }
 	
 	/// <summary>
@@ -61,10 +59,49 @@ public class PlayerMovement : MonoBehaviour {
         // Calculate the attraction forces and flee forces
         CalculateAttractions();
 
+        // Have the player warp around the screen
+        WrapAroundScreen();
+
         // Set the velocity to what we calculated
         rb.velocity = moveForce.normalized * maxSpeed * Time.deltaTime;
     }
 
+    /// <summary>
+    /// Simple wrap around the screen class
+    /// </summary>
+    private void WrapAroundScreen()
+    {
+
+        Vector3 viewportPosition = Camera.main.WorldToViewportPoint(position);
+
+        // Check the Y 
+        if (viewportPosition.y > 1)
+        {
+            position.y = -position.y + wrapPadding;
+            // Having this set transform statement will make it so that I only have to call it when I
+            // know that I moved this object. This will reduce the number of times that this method
+            // is called.
+            transform.position = position;
+        }
+        if (viewportPosition.y < 0)
+        {
+            position.y = -position.y - wrapPadding;
+            transform.position = position;
+        }
+
+        // Check the X
+        if (viewportPosition.x > 1)
+        {
+            position.x = -position.x + wrapPadding;
+            transform.position = position;
+        }
+        if (viewportPosition.x < 0)
+        {
+            position.x = -position.x - wrapPadding;
+            transform.position = position;
+        }
+
+    }
 
     /// <summary>
     /// Calculate the player input
@@ -102,9 +139,9 @@ public class PlayerMovement : MonoBehaviour {
     /// Author: Ben Hoffman
     /// Purpose of method: To calculate the steering force
     /// </summary>
-    /// <param name="targetPos"></param>
+    /// <param name="targetPos">The target position that we want to seek</param>
     /// <returns> The steering force</returns>
-    public Vector2 Seek(Vector2 targetPos)
+    private Vector2 Seek(Vector2 targetPos)
     {
         // Calculate desired velocity
         desiredVelocity = (targetPos - position);
@@ -132,7 +169,7 @@ public class PlayerMovement : MonoBehaviour {
     /// </summary>
     /// <param name="fleeingFromThis"></param>
     /// <returns></returns>
-    public Vector2 Flee(Vector2 fleeingFromThis)
+    private Vector2 Flee(Vector2 fleeingFromThis)
     {
         // Calculate desired velocity
         desiredVelocity = position - fleeingFromThis;
@@ -148,5 +185,10 @@ public class PlayerMovement : MonoBehaviour {
         steeringForce = desiredVelocity - velocity;
 
         return steeringForce;
+    }
+
+    public void OnDisable()
+    {
+        rb.velocity = Vector2.zero;
     }
 }

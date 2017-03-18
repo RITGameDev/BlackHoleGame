@@ -42,7 +42,7 @@ public class PlayerFireController : MonoBehaviour {
             // Set the position of the bullet to that of the spawn point
             bullet.transform.position = bulletSpawn.position;
             // Set the rotiation of the bullet to that of the spawn point
-            bullet.transform.rotation = transform.rotation;
+            bullet.transform.rotation = bulletSpawn.rotation;
             // Set the object as active
             bullet.SetActive(true);
 
@@ -50,7 +50,7 @@ public class PlayerFireController : MonoBehaviour {
 
             // The last time that we fired is now, so set the time since last fire to 0
             timeSinceLastFire = 0f;
-            Debug.Log("Fire!");
+            //Debug.Log("Fire!");
         }
         else
         {
