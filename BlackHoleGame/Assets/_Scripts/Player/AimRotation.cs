@@ -8,12 +8,13 @@ using UnityEngine;
 public class AimRotation : MonoBehaviour {
 
     #region  Fields
-    private string horiz_input = "RS_HORIZ_1";
-    private string vert_input = "RS_VERT_1";
+    private string horiz_input = "RS_HORIZ_";
+    private string vert_input = "RS_VERT_";
 
     public Transform center;
     private Vector3 v;
 
+    // Used for calculations
     private float yRot, xRot;
     private Vector3 centerScreenPos;
     private Vector3 dir;
@@ -24,10 +25,16 @@ public class AimRotation : MonoBehaviour {
     /// <summary>
     /// Set the positoin to be centered at start
     /// </summary>
-    void Start()
+    void Awake()
     {
         // Makes the block positoin be at the center at start
         v = (transform.position - center.position);
+
+        // Set up the player number input
+        int playerNum = GetComponentInParent<PlayerNumber>()._PlayerNumber;
+        // Set up the input strings
+        horiz_input += playerNum.ToString();
+        vert_input += playerNum.ToString();
     }
 
     /// <summary>

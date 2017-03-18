@@ -82,9 +82,11 @@
     <Compile Include="Assets\_Scripts\BlackHoleManager.cs" />
     <Compile Include="Assets\_Scripts\Player\AimRotation.cs" />
     <Compile Include="Assets\_Scripts\Player\ObjectPooler.cs" />
+    <Compile Include="Assets\_Scripts\Player\PlayerColorSet.cs" />
     <Compile Include="Assets\_Scripts\Player\PlayerFireController.cs" />
     <Compile Include="Assets\_Scripts\Player\PlayerHealth.cs" />
     <Compile Include="Assets\_Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\_Scripts\Player\PlayerNumber.cs" />
     <Compile Include="Assets\_Scripts\TrapMover.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

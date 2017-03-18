@@ -17,7 +17,7 @@ public class PlayerFireController : MonoBehaviour {
     private ObjectPooler objPool;   // Our object pooler
     private float timeSinceLastFire = 0f;   // How long has it been since we have shot?
 
-    private string fireInput = "Fire1";
+    private string fireInput = "Fire";
 
 	/// <summary>
     /// Get the reference to the object pooler
@@ -26,7 +26,12 @@ public class PlayerFireController : MonoBehaviour {
     {
         // Get the reference to the object pooler
         objPool = GetComponent<ObjectPooler>();
-	}
+
+        // Set up the player number input
+        int playerNum = GetComponentInParent<PlayerNumber>()._PlayerNumber;
+        // Set up the input strings
+        fireInput += playerNum.ToString();
+    }
 	
 	/// <summary>
     /// Check for input from the player

@@ -20,8 +20,6 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField]
     private float wrapPadding = 0.5f;
 
-    public int playerNum = 1;
-
     private string horizontalInputString = "Horizontal";
     private string verticalInputString = "Vertical" ;
 
@@ -47,6 +45,12 @@ public class PlayerMovement : MonoBehaviour {
         // Get the 2D rigidbody component of this object
         rb = GetComponent<Rigidbody2D>();
         collider = GetComponent<CircleCollider2D>();
+
+        // Set up the player number input
+        int playerNum = GetComponent<PlayerNumber>()._PlayerNumber;
+
+        horizontalInputString += playerNum.ToString();
+        verticalInputString += playerNum.ToString();
     }
 	
 	/// <summary>

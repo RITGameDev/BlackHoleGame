@@ -44,6 +44,11 @@ public class PlayerHealth : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Increase the counter of how long we have been
+    /// in the  lback hole
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerStay2D(Collider2D other)
     {
         if (other.CompareTag("BlackHole"))
@@ -60,6 +65,10 @@ public class PlayerHealth : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Reset the count of when we exit a black hole
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("BlackHole"))
@@ -109,6 +118,5 @@ public class PlayerHealth : MonoBehaviour {
         anim.SetTrigger("Pop");
  
     }
-
 
 }
