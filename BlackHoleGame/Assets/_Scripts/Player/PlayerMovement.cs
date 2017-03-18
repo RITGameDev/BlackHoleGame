@@ -20,10 +20,13 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField]
     private float wrapPadding = 0.5f;
 
+    public int playerNum = 1;
+
     private string horizontalInputString = "Horizontal";
     private string verticalInputString = "Vertical" ;
 
     private Rigidbody2D rb;
+    private CircleCollider2D collider;
     private float moveX;
     private float moveY;
     private Vector2 moveForce;
@@ -39,10 +42,11 @@ public class PlayerMovement : MonoBehaviour {
     /// <summary>
     /// Get the proper components
     /// </summary>
-    void Start ()
+    void Awake ()
     {
         // Get the 2D rigidbody component of this object
         rb = GetComponent<Rigidbody2D>();
+        collider = GetComponent<CircleCollider2D>();
     }
 	
 	/// <summary>
@@ -197,8 +201,31 @@ public class PlayerMovement : MonoBehaviour {
         return steeringForce;
     }
 
+    /// <summary>
+    /// Make sure that the rigidbody is asleep and we are not moving
+    /// when we disable this component
+    /// </summary>
     public void OnDisable()
-    {
+    {  
+        // Sleep the rigidbodyvoid OnDisable()
+        rb.Sleep();
+        // Set velocity to 0 so that we stop moving
         rb.velocity = Vector2.zero;
+        // Disable the collider
+        collider.enabled = false;
+    }
+
+    /// <summary>
+    /// Make sure the rigidbody and collider are enabled when we
+    /// wake up this component
+    /// </summary>
+    private void OnEnable()
+    {
+        // Wake up the rigidbody
+        rb.WakeUp();
+        // Set velocity to 0, in case something happened and we are moving
+        rb.velocity = Vector2.zero;
+        // Enable the collider
+        collider.enabled = true;
     }
 }
