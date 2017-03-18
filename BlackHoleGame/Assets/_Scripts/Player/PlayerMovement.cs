@@ -32,6 +32,8 @@ public class PlayerMovement : MonoBehaviour {
     private Vector2 position;
     private Vector2 velocity;
     private Vector2 steeringForce;
+
+    //private float td;
     #endregion
 
     /// <summary>
@@ -48,7 +50,12 @@ public class PlayerMovement : MonoBehaviour {
     /// </summary>
 	void Update ()
     {
-        // Reset the move force
+        // Get player input
+        GetPlayerInput();
+    }
+
+    private void FixedUpdate()
+    {
         moveForce = Vector2.zero;
 
         position = transform.position;
@@ -63,7 +70,7 @@ public class PlayerMovement : MonoBehaviour {
         WrapAroundScreen();
 
         // Set the velocity to what we calculated
-        rb.velocity = moveForce.normalized * maxSpeed * Time.deltaTime;
+        rb.velocity = moveForce.normalized * maxSpeed;
     }
 
     /// <summary>
@@ -103,15 +110,18 @@ public class PlayerMovement : MonoBehaviour {
 
     }
 
+    private void GetPlayerInput()
+    {
+        // Get the input from the player
+        moveX = Input.GetAxis(horizontalInputString);
+        moveY = Input.GetAxis(verticalInputString);
+    }
+
     /// <summary>
     /// Calculate the player input
     /// </summary>
     private void Move()
     {
-        // Get the input from the player
-        moveX = Input.GetAxis(horizontalInputString);
-        moveY = Input.GetAxis(verticalInputString);
-
         // calculate the x and y directions
         moveForce.x += moveX * playerWeight;
         moveForce.y += moveY * playerWeight;
@@ -129,7 +139,7 @@ public class PlayerMovement : MonoBehaviour {
         for(int i = 0; i < count; i++)
         {
             // Seet the attracted position, and pop it off the stack as we do so
-            moveForce += Seek(BlackHoleManager.currentBlackHoles.BlackHoles[i].transform.position) * seekWeight * Time.deltaTime;
+            moveForce += Seek(BlackHoleManager.currentBlackHoles.BlackHoles[i].transform.position) * seekWeight;
         }
 
         // Flee from all the ojbects that we want to avoid
