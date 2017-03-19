@@ -73,6 +73,9 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>Library\UnityAssemblies\Mono.Cecil.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="BlackHoleGame.Plugins.csproj">
@@ -83,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Assets\_Scripts\BlackHole.cs" />
     <Compile Include="Assets\_Scripts\BlackHoleManager.cs" />
+    <Compile Include="Assets\_Scripts\Movement.cs" />
     <Compile Include="Assets\_Scripts\Player\AimRotation.cs" />
     <Compile Include="Assets\_Scripts\Player\ObjectPooler.cs" />
     <Compile Include="Assets\_Scripts\Player\PlayerColorSet.cs" />
@@ -90,6 +94,7 @@
     <Compile Include="Assets\_Scripts\Player\PlayerHealth.cs" />
     <Compile Include="Assets\_Scripts\Player\PlayerMovement.cs" />
     <Compile Include="Assets\_Scripts\Player\PlayerNumber.cs" />
+    <Compile Include="Assets\_Scripts\ScoreKeeper.cs" />
     <Compile Include="Assets\_Scripts\TrapMover.cs" />
   </ItemGroup>
   <ItemGroup>

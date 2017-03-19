@@ -8,13 +8,19 @@ using UnityEngine;
 /// </summary>
 public class PlayerHealth : MonoBehaviour {
 
+    #region Fields
+
     [SerializeField]
-    private  float spawnTime = 3f;
-    private float animTime = 0.5f;
+    private  float spawnTime = 3f;  // The spawn time, default of 3f
+    private float animTime = 0.5f;  // How long the death animation, fefault is 0.5f
+
     private WaitForSeconds spawnWait;
     public Transform deathSpot;
     public Transform[] spawnPoints;
     private Animator anim;
+    private PlayerNumber _myPlayerNum;
+
+    #endregion
 
     /// <summary>
     /// Create a new wait for second object so that we have time between death and spawns
@@ -25,6 +31,8 @@ public class PlayerHealth : MonoBehaviour {
         spawnWait = new WaitForSeconds(spawnTime);
         // Get the animator component
         anim = GetComponent<Animator>();
+        // Get the player number component
+        _myPlayerNum = GetComponent<PlayerNumber>();
     }
 
     /// <summary>
@@ -41,8 +49,6 @@ public class PlayerHealth : MonoBehaviour {
         }
     }
 
-
-
     /// <summary>
     /// Author: Ben Hoffman
     /// Kill the player, and then respawn thems
@@ -55,11 +61,15 @@ public class PlayerHealth : MonoBehaviour {
 
         // Disable player movement
         pMovement.enabled = false;
+
         // Disable player firing
         pFire.enabled = false;
 
         // Play the animation for getting suck in
         anim.SetTrigger("Shrink");
+
+        // Tell the score keep that we died
+        ScoreKeeper._current_score.AddScore(_myPlayerNum._PlayerNumber, 1);
 
         // Wait fro the animation to finish
         yield return new WaitForSeconds(animTime);
@@ -79,8 +89,7 @@ public class PlayerHealth : MonoBehaviour {
         // Enable player shooting again
         pFire.enabled = true;
 
+        // Set the animation trigger to pop the player back up
         anim.SetTrigger("Pop");
- 
     }
-
 }
