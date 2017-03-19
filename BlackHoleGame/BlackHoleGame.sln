@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackHoleGame.Plugins", "BlackHoleGame.Plugins.csproj", "{0AED1380-79B3-9D64-D33F-4CB860B4BC7D}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackHoleGame", "BlackHoleGame.csproj", "{BE03A0A6-62C9-B655-2617-9AFEFD5A3165}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackHoleGame.Editor.Plugins", "BlackHoleGame.Editor.Plugins.csproj", "{A9E7545C-E7E3-95F8-14F5-7991902D63C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +13,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0AED1380-79B3-9D64-D33F-4CB860B4BC7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AED1380-79B3-9D64-D33F-4CB860B4BC7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AED1380-79B3-9D64-D33F-4CB860B4BC7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AED1380-79B3-9D64-D33F-4CB860B4BC7D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BE03A0A6-62C9-B655-2617-9AFEFD5A3165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BE03A0A6-62C9-B655-2617-9AFEFD5A3165}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE03A0A6-62C9-B655-2617-9AFEFD5A3165}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE03A0A6-62C9-B655-2617-9AFEFD5A3165}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9E7545C-E7E3-95F8-14F5-7991902D63C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9E7545C-E7E3-95F8-14F5-7991902D63C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9E7545C-E7E3-95F8-14F5-7991902D63C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9E7545C-E7E3-95F8-14F5-7991902D63C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

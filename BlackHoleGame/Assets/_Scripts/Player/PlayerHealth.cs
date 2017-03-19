@@ -15,9 +15,6 @@ public class PlayerHealth : MonoBehaviour {
     public Transform deathSpot;
     public Transform[] spawnPoints;
     private Animator anim;
-    [SerializeField]
-    private float blackHoleLifetime = 1f;
-    private float timeInBlackHole = 0f;
 
     /// <summary>
     /// Create a new wait for second object so that we have time between death and spawns
@@ -37,47 +34,14 @@ public class PlayerHealth : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D other)
     {
         // If we are colliding with a trap object...
-        if (other.CompareTag("Trap"))
+        if (other.CompareTag("Trap") || other.CompareTag("BlackHole"))
         {
             // We want to splat the player on the ground and respawn them
             StartCoroutine(Die());
         }
     }
 
-    /// <summary>
-    /// Increase the counter of how long we have been
-    /// in the  lback hole
-    /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        if (other.CompareTag("BlackHole"))
-        {
-            // Add to the amount of time that has been 
-            timeInBlackHole += Time.deltaTime;
 
-            // If we have exceeded our lifetime
-            if(timeInBlackHole >= blackHoleLifetime)
-            {
-                // Die
-                StartCoroutine(Die());
-            }
-        }
-    }
-
-    /// <summary>
-    /// Reset the count of when we exit a black hole
-    /// </summary>
-    /// <param name="other"></param>
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("BlackHole"))
-        {
-            // Reset the black hole time after we leave it
-            timeInBlackHole = 0f;
-        }
-
-    }
 
     /// <summary>
     /// Author: Ben Hoffman
