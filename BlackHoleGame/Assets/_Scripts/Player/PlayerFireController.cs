@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 /// <summary>
 /// Author: Ben Hoffman
 /// This method will allow the player to fire a pooled object when 
 /// they give fire input
 /// </summary>
-[RequireComponent(typeof(ObjectPooler))]
 public class PlayerFireController : MonoBehaviour {
 
     public Transform bulletSpawn;
-
+    [SerializeField]
     private float fireRate = .5f;   // How much time is in between each shot at a minimum
 
     private ObjectPooler objPool;   // Our object pooler
@@ -25,8 +25,7 @@ public class PlayerFireController : MonoBehaviour {
 	void Start ()
     {
         // Get the reference to the object pooler
-        objPool = GetComponent<ObjectPooler>();
-
+        objPool = BlackHoleManager.currentBlackHoles.BlackHolesObjectPool;
         // Set up the player number input
         int playerNum = GetComponentInParent<PlayerNumber>()._PlayerNumber;
         // Set up the input strings
@@ -34,14 +33,15 @@ public class PlayerFireController : MonoBehaviour {
     }
 	
 	/// <summary>
-    /// Check for input from the player
+    /// Check for input from the player, shoot a black hole
+    /// if needed
     /// </summary>
 	void Update ()
     {
         // If the player is giving input and the time since last fire is greater then the minimum we need...
         if (Input.GetAxis(fireInput) > 0f && timeSinceLastFire >= fireRate)
         {
-            // ================= Fire a bullet ===================
+            // ================= Fire a black hole ===================
             // Get a bullet object off of the object pooler
             GameObject bullet = objPool.GetPooledObject();
             // Set the position of the bullet to that of the spawn point
@@ -50,12 +50,16 @@ public class PlayerFireController : MonoBehaviour {
             bullet.transform.rotation = bulletSpawn.rotation;
             // Set the object as active
             bullet.SetActive(true);
-
+            // Enable the black hole that we just shot
             bullet.GetComponent<BlackHole>().EnableBlackHole();
 
+            // Reset the size of the bullet
+            //bullet.GetComponent<BlackHole_Size>().CurrentSize = 1f;
             // The last time that we fired is now, so set the time since last fire to 0
             timeSinceLastFire = 0f;
-            //Debug.Log("Fire!");
+
+            // Make the controller vibrate?
+            
         }
         else
         {

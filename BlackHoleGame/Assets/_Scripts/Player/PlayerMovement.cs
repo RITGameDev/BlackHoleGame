@@ -11,18 +11,25 @@ public class PlayerMovement : Movement
     #region Fields
     [SerializeField]
     private float playerWeight = 1f;
+    [SerializeField]
+    private float dashWeight = 3f;
     
     private string horizontalInputString = "Horizontal";
     private string verticalInputString = "Vertical";
+    private string dashInputString = "Dash";
 
     private CircleCollider2D collider;
     private Rigidbody2D rb;
-
 
     private float moveX;
     private float moveY;
     private Vector2 moveForce;
     private Vector2 userInput;
+
+    [SerializeField]
+    private float minTimeBetweenDashes = 3f;
+    private float timeSinceLastDash;
+    private bool _useDash;
     #endregion
 
     /// <summary>
@@ -39,6 +46,7 @@ public class PlayerMovement : Movement
 
         horizontalInputString += playerNum.ToString();
         verticalInputString += playerNum.ToString();
+        dashInputString += playerNum.ToString();
     }
 
     /// <summary>
@@ -64,11 +72,18 @@ public class PlayerMovement : Movement
         WrapAroundScreen();
 
         // Set the velocity to what we calculated
-        //rb.velocity = moveForce.normalized * MaxSpeed;
-
-        // Set the velocity to what we calculated
         rb.AddForce(moveForce);
-        rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed);
+
+        if (_useDash)
+        {
+            rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed * dashWeight);
+            _useDash = false;
+            timeSinceLastDash = 0f;
+        }
+        else
+        {
+            rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed);
+        }
 
     }
 
@@ -77,6 +92,16 @@ public class PlayerMovement : Movement
         // Get the input from the player
         moveX = Input.GetAxis(horizontalInputString);
         moveY = Input.GetAxis(verticalInputString);
+
+        if(Input.GetAxis(dashInputString) > 0 && timeSinceLastDash >= minTimeBetweenDashes)
+        {
+            _useDash = true;            
+        }
+        else
+        {
+            timeSinceLastDash += Time.deltaTime;
+        }
+
     }
 
     /// <summary>
@@ -90,7 +115,6 @@ public class PlayerMovement : Movement
         userInput.y += moveY * playerWeight;
         return userInput;
     }
-
 
     /// <summary>
     /// Make sure that the rigidbody is asleep and we are not moving

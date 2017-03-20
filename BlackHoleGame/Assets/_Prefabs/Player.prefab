@@ -157,7 +157,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &58243417666297230
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -272,6 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpawn: {fileID: 4387074972677604}
+  fireRate: 1
 --- !u!114 &114929720727370036
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -287,7 +288,9 @@ MonoBehaviour:
   fleeWeight: 1
   wrapPadding: 0.5
   maxSpeed: 5
-  playerWeight: 7
+  playerWeight: 20
+  dashWeight: 100
+  minTimeBetweenDashes: 3
 --- !u!212 &212110765073708348
 SpriteRenderer:
   m_ObjectHideFlags: 1

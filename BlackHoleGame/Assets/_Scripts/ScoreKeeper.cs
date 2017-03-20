@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// This class will be a simple score keeping between the players.
@@ -16,18 +17,22 @@ public class ScoreKeeper : MonoBehaviour
 
     // The winnign score
     [SerializeField]
-    private int winningScore = 10;  // Default value is 10
+    private int startLife = 5;  // Default value is 10
 
     // Score integers
     private int _player_score_1;    // Current player 1 score
     private int _player_score_2;    // Current player 2 score
 
+    private bool _GameOver;
+
     // UI elements
-    public UnityEngine.UI.Text score_text_1;    // Player 1 score text
-    public UnityEngine.UI.Text score_text_2;    // Player 2 score text
-    public UnityEngine.UI.Text winningText;     // The winning text
+    public Text winningText;     // The winning text
+    public Button resetButton;
+    public Button quitButton;
 
     #endregion
+
+    public bool GameOver { get { return _GameOver; } }
 
     /// <summary>
     /// Make sure that there is only one of these
@@ -45,12 +50,17 @@ public class ScoreKeeper : MonoBehaviour
             Destroy(gameObject);
 
         // Initalize the score variables
-        _player_score_1 = 0;
-        _player_score_2 = 0;
+        _player_score_1 = startLife;
+        _player_score_2 = startLife;
 
-        // Set the UI elements
-        SetScoreUI();
-	}	
+        // Disable the buttons
+        quitButton.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(false);
+
+        Time.timeScale = 1f;
+
+        _GameOver = false;
+    }
 
     /// <summary>
     /// Add the score amount to the specified player
@@ -63,41 +73,29 @@ public class ScoreKeeper : MonoBehaviour
         switch (playerNum)
         {
             case (1):
-                _player_score_2 += scoreAmount; 
+                _player_score_1 -= scoreAmount; 
                 break;
             case (2):
-                _player_score_1 += scoreAmount;
+                _player_score_2 -= scoreAmount;
                 break;
             default:
                 // There is no player!!
                 break;
         }
 
-        // Check if we won 
-        if(_player_score_1 >= winningScore)
+        // Check if we are out of live or not
+        if(_player_score_1 <= 0)
         {
-            // Set win text
-            Win(1);
-        }
-        else if(_player_score_2 >= winningScore)
-        {
+            // Player 2 has won
             Win(2);
         }
-
-        // Update the UI
-        SetScoreUI();
+        else if(_player_score_2 <= 0)
+        {
+            // Player 1 has won 
+            Win(1);
+        }
     }
 
-    /// <summary>
-    /// Update the score texts based on the current score fields
-    /// </summary>
-    private void SetScoreUI()
-    {
-        // Set the player 1 score text
-        score_text_1.text = _player_score_1.ToString();
-        // Set the player 2 score text
-        score_text_2.text = _player_score_2.ToString();
-    }
 
     /// <summary>
     /// Set the win text element to the given player
@@ -106,7 +104,42 @@ public class ScoreKeeper : MonoBehaviour
     /// <param name="winningPlayerNum">Which player won?</param>
     private void Win(int winningPlayerNum)
     {
+        if (_GameOver)
+        {
+            return;
+        }
         // Set the winning text
         winningText.text = "Player " + winningPlayerNum.ToString() + " Wins!";
+
+        quitButton.gameObject.SetActive(true);
+        resetButton.gameObject.SetActive(true);
+        _GameOver = true;
+        StartCoroutine(SlowDownTime());
+    }
+
+    private IEnumerator SlowDownTime()
+    {
+        while(Time.timeScale > 0.3)
+        {
+            Time.timeScale = Mathf.Lerp(Time.timeScale, 0f, Time.deltaTime);
+            yield return null;
+        }
+        Time.timeScale = 0f;
+    }
+
+    /// <summary>
+    /// Quit out of the applicatoin
+    /// </summary>
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    /// <summary>
+    /// Reset the current level
+    /// </summary>
+    public void Reset()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(Application.loadedLevel);
     }
 }

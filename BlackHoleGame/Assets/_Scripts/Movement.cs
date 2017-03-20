@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Movement : MonoBehaviour {
 
     [SerializeField]
@@ -88,7 +89,7 @@ public class Movement : MonoBehaviour {
     /// </summary>
     /// <param name="targetPos">The target position that we want to seek</param>
     /// <returns> The steering force</returns>
-    private Vector2 Seek(Vector2 targetPos)
+    public Vector2 Seek(Vector2 targetPos)
     {
         // Calculate desired velocity
         desiredVelocity = (targetPos - position);

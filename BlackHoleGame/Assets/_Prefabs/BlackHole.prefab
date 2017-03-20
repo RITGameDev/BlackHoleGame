@@ -21,6 +21,9 @@ GameObject:
   - component: {fileID: 4956847628402700}
   - component: {fileID: 58560402765708588}
   - component: {fileID: 114544736044489218}
+  - component: {fileID: 50519053842553054}
+  - component: {fileID: 95929494450922780}
+  - component: {fileID: 114160801965614852}
   m_Layer: 0
   m_Name: BlackHole
   m_TagString: BlackHole
@@ -112,7 +115,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1211519395407008}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -4.7991724, y: -0.17917383, z: 0}
+  m_LocalPosition: {x: -2.1748586, y: -3.1265604, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4981531164370378}
@@ -133,6 +136,26 @@ Transform:
   m_Father: {fileID: 4956847628402700}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50519053842553054
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1211519395407008}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!58 &58560402765708588
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -147,6 +170,36 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.1
+--- !u!95 &95929494450922780
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1211519395407008}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0bef250e1ca5d644ab841c2e94e2398d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114160801965614852
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1211519395407008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afc7f02b21bbdd5419efc099a422228d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentSize: 0
+  smoothing: 1
 --- !u!114 &114544736044489218
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -158,9 +211,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 158909e14a777db469ee1884d23d6d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifetime: 6
+  seekWeight: 2
+  fleeWeight: 1
+  wrapPadding: 0.5
+  maxSpeed: 2.5
+  lifetime: 5
   range: 5
-  smoothing: 1
+  forwardWeight: 10
+  endAnimationTime: 0.5
+  startAnimTime: 0.5
 --- !u!198 &198647212597395280
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -216,12 +275,12 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -438130291
+  randomSeed: 1139678297
   InitialModule:
     serializedVersion: 3
     enabled: 1
     startLifetime:
-      scalar: 2
+      scalar: 6
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -239,7 +298,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.5
+          value: 0.8333333
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -266,7 +325,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 2
           time: 0
-          value: 0.5
+          value: 0.099999994
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -567,7 +626,7 @@ ParticleSystem:
       minMaxState: 0
     randomizeRotationDirection: 0
     maxNumParticles: 1000
-    size3D: 0
+    size3D: 1
     rotation3D: 0
     gravityModifier:
       scalar: 0
@@ -2081,7 +2140,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minMaxState: 0
     curve:
-      scalar: 0.7853982
+      scalar: 0.7853981
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2465,7 +2524,7 @@ ParticleSystem:
       minMaxState: 0
     maxLights: 20
   TrailModule:
-    enabled: 0
+    enabled: 1
     ratio: 1
     lifetime:
       scalar: 1
@@ -2506,9 +2565,9 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
       minMaxState: 0
-    minVertexDistance: 0.2
+    minVertexDistance: 0
     textureMode: 0
-    worldSpace: 0
+    worldSpace: 1
     dieWithParticles: 1
     sizeAffectsWidth: 1
     sizeAffectsLifetime: 0
@@ -2793,7 +2852,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: -838632985
+  randomSeed: -1126752878
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -5302,7 +5361,7 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_Materials:
   - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 0}
+  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

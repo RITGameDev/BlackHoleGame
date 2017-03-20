@@ -9,6 +9,7 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour {
 
     #region Fields
+    public PlayerLives playerLives_UI;
 
     [SerializeField]
     private  float spawnTime = 3f;  // The spawn time, default of 3f
@@ -17,8 +18,10 @@ public class PlayerHealth : MonoBehaviour {
     private WaitForSeconds spawnWait;
     public Transform deathSpot;
     public Transform[] spawnPoints;
+
     private Animator anim;
     private PlayerNumber _myPlayerNum;
+    private AimRotation aims;
 
     #endregion
 
@@ -33,6 +36,8 @@ public class PlayerHealth : MonoBehaviour {
         anim = GetComponent<Animator>();
         // Get the player number component
         _myPlayerNum = GetComponent<PlayerNumber>();
+        // Get the aim controller so that I can disbale it when we die
+        aims = GetComponentInChildren<AimRotation>();
     }
 
     /// <summary>
@@ -46,6 +51,9 @@ public class PlayerHealth : MonoBehaviour {
         {
             // We want to splat the player on the ground and respawn them
             StartCoroutine(Die());
+
+            // Pop a life out of the animtaion
+            playerLives_UI.RemoveLife();
         }
     }
 
@@ -64,6 +72,9 @@ public class PlayerHealth : MonoBehaviour {
 
         // Disable player firing
         pFire.enabled = false;
+
+        // Disable aiming again
+        aims.enabled = false;
 
         // Play the animation for getting suck in
         anim.SetTrigger("Shrink");
@@ -88,6 +99,8 @@ public class PlayerHealth : MonoBehaviour {
 
         // Enable player shooting again
         pFire.enabled = true;
+        // Enable aiming again
+        aims.enabled = true;
 
         // Set the animation trigger to pop the player back up
         anim.SetTrigger("Pop");
