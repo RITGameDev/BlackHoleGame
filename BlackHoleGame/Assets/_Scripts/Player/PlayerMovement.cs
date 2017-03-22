@@ -11,8 +11,7 @@ public class PlayerMovement : Movement
     #region Fields
     [SerializeField]
     private float playerWeight = 1f;
-    [SerializeField]
-    private float dashWeight = 3f;
+    private float dashWeight = 1f;
     
     private string horizontalInputString = "Horizontal";
     private string verticalInputString = "Vertical";
@@ -26,10 +25,12 @@ public class PlayerMovement : Movement
     private Vector2 moveForce;
     private Vector2 userInput;
 
-    [SerializeField]
-    private float minTimeBetweenDashes = 3f;
+    private float minTimeBetweenDashes = 5f;
+
+    private float currentDash;
+    private float dashTimeLengh = 0.3f;
     private float timeSinceLastDash;
-    private bool _useDash;
+    private TrailRenderer trailRend;
     #endregion
 
     /// <summary>
@@ -47,6 +48,11 @@ public class PlayerMovement : Movement
         horizontalInputString += playerNum.ToString();
         verticalInputString += playerNum.ToString();
         dashInputString += playerNum.ToString();
+
+        currentDash = dashWeight;
+        timeSinceLastDash = minTimeBetweenDashes;
+        trailRend = GetComponent<TrailRenderer>();
+        trailRend.enabled = false;
     }
 
     /// <summary>
@@ -58,6 +64,9 @@ public class PlayerMovement : Movement
         GetPlayerInput();
     }
 
+    /// <summary>
+    /// Calculate the movement of the player
+    /// </summary>
     private void FixedUpdate()
     {
         moveForce = Vector2.zero;
@@ -66,7 +75,7 @@ public class PlayerMovement : Movement
         moveForce += Move();
 
         // Calculate the attraction forces and flee forces
-        moveForce += CalculateAttractions(rb.velocity);
+        moveForce += CalculateAttractions(rb.velocity) * currentDash;
 
         // Have the player warp around the screen
         WrapAroundScreen();
@@ -74,19 +83,12 @@ public class PlayerMovement : Movement
         // Set the velocity to what we calculated
         rb.AddForce(moveForce);
 
-        if (_useDash)
-        {
-            rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed * dashWeight);
-            _useDash = false;
-            timeSinceLastDash = 0f;
-        }
-        else
-        {
-            rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed);
-        }
-
+        rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed);
     }
 
+    /// <summary>
+    /// Get the unput from the player
+    /// </summary>
     private void GetPlayerInput()
     {
         // Get the input from the player
@@ -95,12 +97,32 @@ public class PlayerMovement : Movement
 
         if(Input.GetAxis(dashInputString) > 0 && timeSinceLastDash >= minTimeBetweenDashes)
         {
-            _useDash = true;            
+            StartCoroutine(UseDash());
+            timeSinceLastDash = 0f;
         }
         else
         {
             timeSinceLastDash += Time.deltaTime;
         }
+
+    }
+
+    /// <summary>
+    /// This method will change the dash value, then wait, and change 
+    /// it back to what it was
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator UseDash()
+    {
+        // Change the dash wieght
+        currentDash = 0f;
+        trailRend.enabled = true;
+
+        // Wait
+        yield return new WaitForSeconds(dashTimeLengh);
+
+        currentDash = dashWeight;
+        trailRend.enabled = false;
 
     }
 
