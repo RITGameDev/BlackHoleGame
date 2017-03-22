@@ -29,7 +29,7 @@ public class TrapMover : Movement {
         moveForce = Vector2.zero;    
 
         // Calculate the attraction forces and flee forces
-        moveForce += CalculateAttractions();
+        moveForce += CalculateAttractions(rb.velocity);
 
         // Have the player warp around the screen
         WrapAroundScreen();

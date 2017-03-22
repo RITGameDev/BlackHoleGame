@@ -5,9 +5,9 @@ using UnityEngine;
 public class BlackHole_Size : MonoBehaviour {
 
     private float startSize = 1f;
+    private float maxSize = 2.5f;
     private float currentSize;
-    [SerializeField]
-    private float smoothing = 1f;
+    private float smoothing = 10f;
     private IEnumerator currentSizingRoutine;
 
     public float CurrentSize
@@ -15,15 +15,16 @@ public class BlackHole_Size : MonoBehaviour {
         get { return currentSize; }
         set
         {
+            // Actually set the current size variable
             currentSize = value;
-            // Start sizing this
+            // Start start the size up routine
             if(currentSizingRoutine != null)
             {
                 StopCoroutine(currentSizingRoutine);
             }
             if (isActiveAndEnabled)
             {
-                currentSizingRoutine = ChangeSize(currentSize);
+                currentSizingRoutine = ChangeSize(currentSize, smoothing, true);
                 StartCoroutine(currentSizingRoutine);
             }
 
@@ -45,70 +46,69 @@ public class BlackHole_Size : MonoBehaviour {
         // If we are colliding with a trap object...
         if (other.CompareTag("BlackHole"))
         {
+            // Get the size of the other object
             float otherSize = other.GetComponentInParent<BlackHole_Size>().CurrentSize;
-            // If the object is bigger or the same, then destroy us.
+
+            // If the object is bigger, then destroy us.
             if(otherSize > currentSize)
             {
+                // Set my size to 0
+                CurrentSize = 0f;
+                // Disable our attraction because we are smaller
                 GetComponent<BlackHole>().DisableMe();
+                return;
             }
+            // If we are bigger then the o
             else if(otherSize < currentSize)
             {
-                // Disable the other black hole if we are bigger
-                other.GetComponentInParent<BlackHole>().DisableMe();
-
                 // Increase my size, thus increasing how much things are attracted to me
-                if (currentSizingRoutine != null)
-                {
-                    StopCoroutine(currentSizingRoutine);
-                }
-                // Create a new coroutine
-                currentSizingRoutine = ChangeSize(currentSize + otherSize);
-                // Start it
-                StartCoroutine(currentSizingRoutine);
+                CurrentSize = Mathf.Clamp(currentSize + otherSize, 1f, maxSize);
             }
-            else
-            {
-                // Tell the black hole manager to merge us both and create a new one
-                BlackHoleManager.currentBlackHoles.MergeTwo(this, other.GetComponent<BlackHole_Size>());
-            }
-          
         }
-    }
-
-    private IEnumerator ChangeSize(float addToValue)
-    {
-        // Create a new target size based on the value
-        Vector3 newScale = new Vector3(addToValue, addToValue, addToValue);
-
-        while (transform.localScale.x < addToValue + 0.3f)
-        {
-            // Lerp between what we have now and what we want, with the smoothing variable
-            transform.localScale = Vector3.Lerp(transform.localScale, newScale, Time.deltaTime * smoothing);
-            // Return null to make smooth frames
-            yield return null;
-        }
-
-        // Reset our lifetime
-        GetComponent<BlackHole>().ResetLifetime();
-
-        yield return null;
     }
 
     /// <summary>
-    /// Reset the size when this object is disabled
+    /// Lerp between sizes of this object
     /// </summary>
-    void OnDisable()
+    /// <param name="newSize">The new size that we want</param>
+    /// <param name="smoothingValue">How quickly do we want this to happen</param>
+    /// <param name="resetLifetime">Do we want to reset the lifetime of this object?</param>
+    /// <returns></returns>
+    private IEnumerator ChangeSize(float newSize, float smoothingValue, bool resetLifetime)
     {
-        Vector3 newScale = new Vector3(startSize, startSize, startSize);
-        transform.localScale = newScale;
+        // If we are above the max size then stop
+        if(currentSize == maxSize)
+        {
+            yield break;
+        }
 
-        CurrentSize = startSize;
+        if (resetLifetime)
+        {
+            // Reset our lifetime since now we are getting bigger
+            GetComponent<BlackHole>().ResetLifetime();
+        }
+
+        // Create a new target size based on the value
+        Vector3 newScale = new Vector3(newSize, newSize, newSize);
+
+        // Loop while we are smaller then the new scale that we want
+        while (transform.localScale.x < newScale.x + 0.5f)
+        {
+            // Lerp between what we have now and what we want, with the smoothing variable
+            transform.localScale = Vector3.Lerp(transform.localScale, newScale, Time.deltaTime * smoothingValue);
+            // Return null to make smooth frames
+            yield return null;
+        }
     }
+
 
     void OnEnable()
     {
+        Vector3 newScale = new Vector3(0f, 0f, 0f);
+        transform.localScale = newScale;
+
         // Change the current size to something with some random variation
-        CurrentSize = startSize + Random.Range(-0.5f, .5f);
+        CurrentSize = startSize + Random.Range(0f, .3f);
         // Using the property instead of the field will automatically start the 
         // scalling of this
     }

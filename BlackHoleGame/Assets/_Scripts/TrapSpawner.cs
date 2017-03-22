@@ -17,7 +17,7 @@ public class TrapSpawner : MonoBehaviour {
         for (int i = 0; i < amount; i++)
         {
             // Instantiate a prefab instance
-            GameObject tempObj = (GameObject)Instantiate(asteroidObject);
+            Instantiate(asteroidObject);
         }
     }
 

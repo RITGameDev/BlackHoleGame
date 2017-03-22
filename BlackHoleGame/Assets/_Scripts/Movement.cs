@@ -7,8 +7,8 @@ public class Movement : MonoBehaviour {
 
     [SerializeField]
     private float seekWeight = 1f;
-    [SerializeField]
-    private float fleeWeight = 1f;
+    //[SerializeField]
+    //private float fleeWeight = 1f;
     [SerializeField]
     private float wrapPadding = 0.5f;
     [SerializeField]
@@ -21,7 +21,7 @@ public class Movement : MonoBehaviour {
     private Vector2 position;
 
 
-    public float MaxSpeed { get { return maxSpeed; } }  
+    public float MaxSpeed { get { return maxSpeed; } set { maxSpeed = value; } }  
 
     /// <summary>
     /// Simple wrap around the screen class
@@ -64,8 +64,9 @@ public class Movement : MonoBehaviour {
     /// <summary>
     /// Loop through our attracted forces and add to our move force each one
     /// </summary>
-    public Vector2 CalculateAttractions()
+    public Vector2 CalculateAttractions(Vector2 currentVelocity)
     {
+        velocity = currentVelocity;
         Vector2 attractionForce = Vector3.zero;
 
         // how many things do we want to be attracted towards?

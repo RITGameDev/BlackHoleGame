@@ -91,7 +91,7 @@ public class BlackHole : Movement {
         moveForce += Seek(target) * forwardWeight;
 
         // Calculate the attraction forces and flee forces
-        moveForce += CalculateAttractions();
+        moveForce += CalculateAttractions(rb.velocity);
 
         // Have the player warp around the screen
         WrapAroundScreen();
@@ -106,9 +106,12 @@ public class BlackHole : Movement {
     /// </summary>
     public void DisableMe()
     {
-        // Start the disable coroutine
-        if(isActiveAndEnabled)
-            StartCoroutine(DisableThis());
+        // Move us out of the way
+        transform.position = new Vector3(1000, 1000, 0f);
+        //size.enabled = false;
+        // Remove us from the list of black holes
+        BlackHoleManager.currentBlackHoles.BlackHoles.Remove(this);
+        //gameObject.SetActive(false);
     }
 
     private IEnumerator DisableThis()
@@ -125,7 +128,7 @@ public class BlackHole : Movement {
         // Remove myself from the list of black holes
         BlackHoleManager.currentBlackHoles.BlackHoles.Remove(this);
 
-        // Set this object as inactive
+        // Set this object as inactive     
         gameObject.SetActive(false);
     }
 

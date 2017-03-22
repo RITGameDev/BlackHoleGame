@@ -180,7 +180,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -242,7 +242,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afc7f02b21bbdd5419efc099a422228d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothing: 1
+  maxSize: 2.5
+  smoothing: 10
 --- !u!114 &114544736044489218
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -254,13 +255,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 158909e14a777db469ee1884d23d6d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seekWeight: 2
-  fleeWeight: 1
+  seekWeight: 10
   wrapPadding: 0.5
-  maxSpeed: 2.5
-  lifetime: 5
+  maxSpeed: 2
+  lifetime: 6
   range: 5
-  forwardWeight: 10
+  forwardWeight: 15
   endAnimationTime: 0.5
   startAnimTime: 0.5
 --- !u!198 &198647212597395280

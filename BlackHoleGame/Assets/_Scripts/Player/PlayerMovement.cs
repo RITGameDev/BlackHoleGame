@@ -66,7 +66,7 @@ public class PlayerMovement : Movement
         moveForce += Move();
 
         // Calculate the attraction forces and flee forces
-        moveForce += CalculateAttractions();
+        moveForce += CalculateAttractions(rb.velocity);
 
         // Have the player warp around the screen
         WrapAroundScreen();
