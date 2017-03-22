@@ -15,8 +15,8 @@ public class PlayerHealth : MonoBehaviour {
     private  float spawnTime = 3f;  // The spawn time, default of 3f
     private float animTime = 0.5f;  // How long the death animation, fefault is 0.5f
 
-    private WaitForSeconds spawnWait;
-    public Transform deathSpot;
+    private WaitForSeconds spawnWait; // The wait object for how long we will wait after death 
+    public Transform deathSpot;       // Where this object will be moved to when the 
     public Transform[] spawnPoints;
 
     private Animator anim;
@@ -36,7 +36,7 @@ public class PlayerHealth : MonoBehaviour {
         anim = GetComponent<Animator>();
         // Get the player number component
         _myPlayerNum = GetComponent<PlayerNumber>();
-        // Get the aim controller so that I can disbale it when we die
+        // Get the aim controller so that I can disable it when we die
         aims = GetComponentInChildren<AimRotation>();
     }
 
@@ -47,7 +47,7 @@ public class PlayerHealth : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D other)
     {
         // If we are colliding with a trap object...
-        if (other.CompareTag("Trap") || other.CompareTag("BlackHole"))
+        if (other.CompareTag("BlackHole"))
         {
             // We want to splat the player on the ground and respawn them
             StartCoroutine(Die());

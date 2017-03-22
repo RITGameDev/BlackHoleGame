@@ -5,7 +5,7 @@ using UnityEngine;
 public class BlackHole_Size : MonoBehaviour {
 
     private float startSize = 1f;
-    public float currentSize;
+    private float currentSize;
     [SerializeField]
     private float smoothing = 1f;
     private IEnumerator currentSizingRoutine;

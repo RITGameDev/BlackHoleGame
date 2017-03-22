@@ -32,6 +32,8 @@ public class BlackHole : Movement {
 
     #endregion
 
+    public float Size { get { return size.CurrentSize; } }
+
     public float Lifetime
     {
         get { return lifetime; }

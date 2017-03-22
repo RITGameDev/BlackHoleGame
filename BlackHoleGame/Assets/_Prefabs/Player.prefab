@@ -22,12 +22,11 @@ GameObject:
   - component: {fileID: 58243417666297230}
   - component: {fileID: 50051269667576204}
   - component: {fileID: 114929720727370036}
-  - component: {fileID: 114089440109228550}
   - component: {fileID: 114887358657816026}
   - component: {fileID: 114807055792550234}
   - component: {fileID: 95672176636735682}
   - component: {fileID: 114335738186134078}
-  - component: {fileID: 114039146053862222}
+  - component: {fileID: 114602729837852330}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -90,7 +89,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1220875079780804}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.05, y: -1.9, z: 0}
+  m_LocalPosition: {x: 6.55, y: 2.57, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4916551309104070}
@@ -153,7 +152,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 92d561cba818633449348e7a2c545f74, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -189,32 +188,6 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114039146053862222
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1220875079780804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6e1bc35e6a0b1b49b7343ca37dca1ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114089440109228550
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1220875079780804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c8127a9e453e8d45b25631a10b8874e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pooledObject: {fileID: 1211519395407008, guid: 72a0c4efe490d0c40b6b7185e48ecfd6,
-    type: 2}
-  pooledAmount: 10
-  willGrow: 1
 --- !u!114 &114335738186134078
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -226,8 +199,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 446805f7cb4e78047845b03a163e707f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerNumber: 1
-  playerColor: {r: 0, g: 0.8758622, b: 1, a: 0.897}
+  playerNumber: 2
+  playerColor: {r: 0.07586217, g: 1, b: 0, a: 0.897}
 --- !u!114 &114390942415360492
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -240,6 +213,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   center: {fileID: 4172786410456246}
+--- !u!114 &114602729837852330
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1220875079780804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6e1bc35e6a0b1b49b7343ca37dca1ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114807055792550234
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -251,6 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c219b7cf7bb64b4db3989aeeab005ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerLives_UI: {fileID: 0}
   spawnTime: 2
   deathSpot: {fileID: 0}
   spawnPoints:
@@ -358,6 +343,6 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 99
   m_Sprite: {fileID: 21300000, guid: 10db72642d3466a40ac02f0e03ff3c5a, type: 3}
-  m_Color: {r: 0.013516448, g: 0.9191176, b: 0.9191176, a: 1}
+  m_Color: {r: 0.013516448, g: 0.9191176, b: 0.39449343, a: 1}
   m_FlipX: 0
   m_FlipY: 0

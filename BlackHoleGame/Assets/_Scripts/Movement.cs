@@ -75,7 +75,9 @@ public class Movement : MonoBehaviour {
         for (int i = 0; i < count; i++)
         {
             // Seet the attracted position, and pop it off the stack as we do so
-            attractionForce += Seek(BlackHoleManager.currentBlackHoles.BlackHoles[i].transform.position) * seekWeight;
+            attractionForce += Seek(
+                BlackHoleManager.currentBlackHoles.BlackHoles[i].transform.position)
+                * seekWeight * BlackHoleManager.currentBlackHoles.BlackHoles[i].Size;
         }
 
         // Flee from all the ojbects that we want to avoid

@@ -13,8 +13,7 @@ public class PlayerLives : MonoBehaviour {
 	void Start ()
     {
         life_images = new Stack<Image>();
-        // Get all the images
-        //life_images = GetComponentsInChildren<Image>();
+        // Get all the images on this object
         Image[] images = GetComponentsInChildren<Image>();
         for(int i = 0; i < images.Length; i++)
         {
