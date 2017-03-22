@@ -20,10 +20,6 @@ public class TrapMover : Movement {
         ResetMovement();
 	}
 
-    void OnBecameInvisible()
-    {
-
-    }
 
     private void FixedUpdate()
     {

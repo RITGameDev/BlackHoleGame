@@ -45,7 +45,7 @@ public class BlackHole_Size : MonoBehaviour {
         // If we are colliding with a trap object...
         if (other.CompareTag("BlackHole"))
         {
-            float otherSize = other.GetComponent<BlackHole_Size>().CurrentSize;
+            float otherSize = other.GetComponentInParent<BlackHole_Size>().CurrentSize;
             // If the object is bigger or the same, then destroy us.
             if(otherSize > currentSize)
             {
@@ -54,7 +54,7 @@ public class BlackHole_Size : MonoBehaviour {
             else if(otherSize < currentSize)
             {
                 // Disable the other black hole if we are bigger
-                other.GetComponent<BlackHole>().DisableMe();
+                other.GetComponentInParent<BlackHole>().DisableMe();
 
                 // Increase my size, thus increasing how much things are attracted to me
                 if (currentSizingRoutine != null)

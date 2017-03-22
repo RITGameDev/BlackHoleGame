@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BlackHole
   - Trap
+  - BlackHole_Large
   layers:
   - Default
   - TransparentFX

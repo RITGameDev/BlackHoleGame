@@ -44,10 +44,10 @@ public class PlayerHealth : MonoBehaviour {
     /// Detects if we are in a trap or not
     /// </summary>
     /// <param name="other"></param>
-    void OnTriggerEnter2D(Collider2D other)
+    void OnCollisionEnter2D (Collision2D other)
     {
         // If we are colliding with a trap object...
-        if (other.CompareTag("BlackHole"))
+        if (other.gameObject.CompareTag("BlackHole"))
         {
             // We want to splat the player on the ground and respawn them
             StartCoroutine(Die());

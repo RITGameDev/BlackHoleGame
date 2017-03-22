@@ -45,10 +45,11 @@ public class BlackHoleManager : MonoBehaviour {
     /// <param name="b">Another black hole</param>
     public void MergeTwo(BlackHole_Size a, BlackHole_Size b)
     {
-        //if (!isWorking)
-      //  {
+        
+        if (!isWorking)
+        {
             StartCoroutine(MergeTwo(a.CurrentSize + b.CurrentSize, a.gameObject.transform.position));
-      //  }
+        }
     }
 
     private IEnumerator MergeTwo(float size, Vector3 position)
@@ -63,7 +64,7 @@ public class BlackHoleManager : MonoBehaviour {
         temp.transform.position = position;
         // set the size 
         temp.CurrentSize = size;
-        
+        temp.gameObject.SetActive(true);
         // we are done working on something
         isWorking = false;
         yield return null;
