@@ -18,12 +18,10 @@ public class PlayerMovement : Movement
     private string dashInputString = "Dash";
 
     private CircleCollider2D collider;
-    private Rigidbody2D rb;
 
-    private float moveX;
-    private float moveY;
-    private Vector2 moveForce;
-    private Vector2 userInput;
+    private float moveX;    // The X input from the player
+    private float moveY;    // The Y input from the player
+    private Vector2 userInput;  // Used for the calculations of the player input
 
     private float minTimeBetweenDashes = 5f;
 
@@ -36,11 +34,13 @@ public class PlayerMovement : Movement
     /// <summary>
     /// Get the proper components
     /// </summary>
-    void Awake()
+    public override void Awake()
     {
+        // Call the base awake function
+        base.Awake();
+
         // Get the collider component of this object
         collider = GetComponent<CircleCollider2D>();
-        rb = GetComponent<Rigidbody2D>();
 
         // Set up the player number input
         int playerNum = GetComponent<PlayerNumber>()._PlayerNumber;
@@ -67,23 +67,13 @@ public class PlayerMovement : Movement
     /// <summary>
     /// Calculate the movement of the player
     /// </summary>
-    private void FixedUpdate()
-    {
-        moveForce = Vector2.zero;
-
+    public override void CalculateMovement()
+    {  
         // Do the movement calcluations
         moveForce += Move();
 
         // Calculate the attraction forces and flee forces
         moveForce += CalculateAttractions(rb.velocity) * currentDash;
-
-        // Have the player warp around the screen
-        WrapAroundScreen();
-
-        // Set the velocity to what we calculated
-        rb.AddForce(moveForce);
-
-        rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed);
     }
 
     /// <summary>
@@ -104,7 +94,6 @@ public class PlayerMovement : Movement
         {
             timeSinceLastDash += Time.deltaTime;
         }
-
     }
 
     /// <summary>
@@ -123,7 +112,6 @@ public class PlayerMovement : Movement
 
         currentDash = dashWeight;
         trailRend.enabled = false;
-
     }
 
     /// <summary>
@@ -165,6 +153,5 @@ public class PlayerMovement : Movement
         // Enable the collider
         collider.enabled = true;
     }
-
 
 }

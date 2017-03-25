@@ -17,18 +17,11 @@ public class BlackHole : Movement {
     private float range = 1f;    // How much force we want to add to this
     [SerializeField]
     private float forwardWeight = 10f;
-    [SerializeField]
-    private float endAnimationTime = 0.5f;
-    [SerializeField]
-    private float startAnimTime = 0.5f;
 
-    private Animator anim;
-    private WaitForSeconds animationTimeWait;
-    private Rigidbody2D rb;
-    private Vector2 moveForce;
+    // The current size component of this black hole object
     private BlackHole_Size size;
 
-    private Vector3 target;
+    private Vector3 target;  // The object that we will move towards
 
     #endregion
 
@@ -44,14 +37,11 @@ public class BlackHole : Movement {
         }
     }
 
-    private void Awake()
+    public override void Awake()
     {
-        // Get the rigidbody componenet
-        rb = GetComponent<Rigidbody2D>();
-        // Create a animation time waitForSeconds
-        animationTimeWait = new WaitForSeconds(endAnimationTime);
-        // Get the animator component
-        anim = GetComponent<Animator>();
+        // Call the base movement 
+        base.Awake();
+
         // Get the black holes size componenet
         size = GetComponent<BlackHole_Size>();
     }
@@ -82,23 +72,13 @@ public class BlackHole : Movement {
     /// Move this object towards it's target, and 
     /// the other black holes
     /// </summary>
-    private void FixedUpdate()
+    public override void CalculateMovement()
     {
-        // Reset the move force
-        moveForce = Vector2.zero;
-
         // Seel our target
         moveForce += Seek(target) * forwardWeight;
 
         // Calculate the attraction forces and flee forces
         moveForce += CalculateAttractions(rb.velocity);
-
-        // Have the player warp around the screen
-        WrapAroundScreen();
-
-        // Set the velocity to what we calculated
-        rb.AddForce(moveForce);
-        rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed);
     }
 
     /// <summary>
@@ -108,30 +88,15 @@ public class BlackHole : Movement {
     {
         // Move us out of the way
         transform.position = new Vector3(1000, 1000, 0f);
-        //size.enabled = false;
+
         // Remove us from the list of black holes
         BlackHoleManager.currentBlackHoles.BlackHoles.Remove(this);
-        //gameObject.SetActive(false);
     }
 
-    private IEnumerator DisableThis()
-    {
-        // Disable the collider
-        size.enabled = false;
-
-        // Play the animation 
-        //anim.SetTrigger("ShrinkHole");
-
-        // Wait for the animation to finish
-        yield return animationTimeWait;
-
-        // Remove myself from the list of black holes
-        BlackHoleManager.currentBlackHoles.BlackHoles.Remove(this);
-
-        // Set this object as inactive     
-        gameObject.SetActive(false);
-    }
-
+    /// <summary>
+    /// Reset the lifetime of this object by canceling the invoke of the 
+    /// disable method, and starting it again with it's currnet lifetime
+    /// </summary>
     public void ResetLifetime()
     {
         CancelInvoke();

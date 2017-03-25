@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/// <summary>
+/// The basis of every moving object in the scene, that will have
+/// all the calcualtions that a moving object should be able to do
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))]
 public class Movement : MonoBehaviour {
 
+    #region Fields
     [SerializeField]
     private float seekWeight = 1f;
     //[SerializeField]
@@ -14,14 +19,102 @@ public class Movement : MonoBehaviour {
     [SerializeField]
     private float maxSpeed = 1f;
 
+    public Vector2 moveForce;  // How much we want to move
+    public Rigidbody2D rb;      // Our 2d rigidbody object
+
     // Use these for calculations
     private Vector2 desiredVelocity;
     private Vector2 velocity;
     private Vector2 steeringForce;
     private Vector2 position;
 
+    private Vector2 velocityWhenPaused; // This will store our movement when pause, so that we can set it back when we resume
 
-    public float MaxSpeed { get { return maxSpeed; } set { maxSpeed = value; } }  
+    public bool Paused { get; set; }
+    public float MaxSpeed { get { return maxSpeed; } set { maxSpeed = value; } }
+
+    #endregion
+
+    /// <summary>
+    /// Get the RB componenet, and intialize the velocity when
+    /// paused
+    /// </summary>
+    public virtual void Awake()
+    {
+        // Get the rigidibody copmponeent
+        rb = GetComponent<Rigidbody2D>();
+        // Initalize the velocity while paused
+        velocityWhenPaused = Vector2.zero;
+    }
+
+    private void FixedUpdate()
+    {
+        // If the game is paused....
+        if(GameManager.gameManager.CurrentGameState == GameState.Paused)
+        {
+            // Make sure that our movement is paused
+            PauseMovement();
+
+            // return out of this method so that we don't waste time
+            return;
+        }
+
+
+        // Call the overriden method of the calculate the movement of this object, if we are playing
+        if (GameManager.gameManager.CurrentGameState == GameState.Playing)
+        {
+            // Make sure that our RB is awake
+            ResumeMovement();
+
+            // Set the move force to zero to reset the movement
+            moveForce = Vector2.zero;
+
+            // Calculate the movement of this object
+            CalculateMovement();
+
+        }
+
+        // Wrap all objects around the screen
+        WrapAroundScreen();
+
+        // Set the velocity to what we calculated
+        rb.AddForce(moveForce);
+
+        rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed);
+    }
+
+    /// <summary>
+    /// This will be where each individual movement object calculates their movement
+    /// </summary>
+    public virtual void CalculateMovement() { }
+
+    /// <summary>
+    /// Sleep the rigid body object
+    /// </summary>
+    public void PauseMovement()
+    {
+        // If this RB is awake...
+        if (rb.IsAwake())
+        {
+            velocityWhenPaused = rb.velocity;
+            // This will sleep the rigidbody
+            rb.Sleep();
+        }
+    }
+
+    /// <summary>
+    /// Wake up the rigidbody object
+    /// </summary>
+    public void ResumeMovement()
+    {
+        // If the RB is asleep...
+        if (!rb.IsAwake())
+        {
+            rb.velocity = velocityWhenPaused;
+            // This will wake up the rigid body
+            rb.WakeUp();
+        }
+    }
 
     /// <summary>
     /// Simple wrap around the screen class

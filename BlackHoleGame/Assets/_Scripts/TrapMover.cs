@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Move this traps around the screen, attracting them towards the black holes
+/// and 
+/// </summary>
 public class TrapMover : Movement {
 
-    private Rigidbody2D rb;
-    private Vector2 moveForce;
     private Vector2 camLimits;
 
-	// Use this for initialization
-	void Awake() {
-        rb = GetComponent<Rigidbody2D>();
+    public override void Awake()
+    {
+        // Call the base movement object
+        base.Awake();
 
         // Get the size of the camera
         camLimits.x = Camera.main.pixelWidth;
@@ -20,23 +23,10 @@ public class TrapMover : Movement {
         ResetMovement();
 	}
 
-
-    private void FixedUpdate()
-    {
-        // If we are outside of the screen view, then seek the center
-
-        // Do the movement calculations
-        moveForce = Vector2.zero;    
-
+    public override void CalculateMovement()
+    { 
         // Calculate the attraction forces and flee forces
         moveForce += CalculateAttractions(rb.velocity);
-
-        // Have the player warp around the screen
-        WrapAroundScreen();
-
-        // Set the velocity to what we calculated
-        rb.AddForce(moveForce);
-        rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed);
     }
 
     /// <summary>
@@ -71,9 +61,9 @@ public class TrapMover : Movement {
         {
             randomVal *= -1f;
         }
+
         Vector3 v3Pos = Camera.main.ViewportToWorldPoint(new Vector3(1.5f + randomVal, 1.5f + randomVal, 0f));
 
         transform.position = v3Pos;
-
     }
 }
