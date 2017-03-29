@@ -26,7 +26,7 @@ public class TrapMover : Movement {
     public override void CalculateMovement()
     { 
         // Calculate the attraction forces and flee forces
-        moveForce += CalculateAttractions(rb.velocity);
+        moveForce += CalculateAttractions();
     }
 
     /// <summary>

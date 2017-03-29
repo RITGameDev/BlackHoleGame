@@ -5,32 +5,32 @@ using UnityEngine;
 /// <summary>
 /// The basis of every moving object in the scene, that will have
 /// all the calcualtions that a moving object should be able to do
+/// Author: Ben Hoffman
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class Movement : MonoBehaviour {
 
     #region Fields
-    [SerializeField]
-    private float seekWeight = 1f;
-    //[SerializeField]
-    //private float fleeWeight = 1f;
-    [SerializeField]
-    private float wrapPadding = 0.5f;
-    [SerializeField]
-    private float maxSpeed = 1f;
 
-    public Vector2 moveForce;  // How much we want to move
+    [SerializeField]
+    private float seekWeight = 1f;      // How much weight the things that we are seeking (mostly black holes) will have
+    [SerializeField]
+    private float wrapPadding = 0.5f;   // How much wrap padding we want when things wrap the screen, makes it look smoother
+    [SerializeField]
+    private float maxSpeed = 1f;        // The max speed that this objcet can have. Used to clamp the magnitude of velocity vector
+
+    public Vector2 moveForce;   // How much we want to move
     public Rigidbody2D rb;      // Our 2d rigidbody object
 
-    // Use these for calculations
+    // Use these for calculations so that we do not have to make temporary variables
     private Vector2 desiredVelocity;
     private Vector2 velocity;
     private Vector2 steeringForce;
-    private Vector2 position;
+    private Vector2 currentPosition;
+    private Vector2 attractionForce;
 
     private Vector2 velocityWhenPaused; // This will store our movement when pause, so that we can set it back when we resume
 
-    public bool Paused { get; set; }
     public float MaxSpeed { get { return maxSpeed; } set { maxSpeed = value; } }
 
     #endregion
@@ -43,10 +43,17 @@ public class Movement : MonoBehaviour {
     {
         // Get the rigidibody copmponeent
         rb = GetComponent<Rigidbody2D>();
+
         // Initalize the velocity while paused
         velocityWhenPaused = Vector2.zero;
     }
 
+    /// <summary>
+    /// Handle the movement of this object by wrapping it aronud the screen,
+    /// stoping if we are paused, and resuming if we need to. Call the 
+    /// calculate movement method so that any children can put in 
+    /// custom movement patterns
+    /// </summary>
     private void FixedUpdate()
     {
         // If the game is paused....
@@ -80,6 +87,7 @@ public class Movement : MonoBehaviour {
         // Set the velocity to what we calculated
         rb.AddForce(moveForce);
 
+        // Clamp the velocity to the max speed, and add it to our rigidbody
         rb.velocity = Vector2.ClampMagnitude(rb.velocity, MaxSpeed);
     }
 
@@ -89,13 +97,14 @@ public class Movement : MonoBehaviour {
     public virtual void CalculateMovement() { }
 
     /// <summary>
-    /// Sleep the rigid body object
+    /// Sleep the rigid body object and store the velocity 
     /// </summary>
     public void PauseMovement()
     {
         // If this RB is awake...
         if (rb.IsAwake())
         {
+            // Store the velocity when we paused so that we can set it back later
             velocityWhenPaused = rb.velocity;
             // This will sleep the rigidbody
             rb.Sleep();
@@ -103,13 +112,14 @@ public class Movement : MonoBehaviour {
     }
 
     /// <summary>
-    /// Wake up the rigidbody object
+    /// Wake up the rigidbody object and reusme moving
     /// </summary>
     public void ResumeMovement()
     {
         // If the RB is asleep...
         if (!rb.IsAwake())
         {
+            // Set teh velocity to what it was when we paused
             rb.velocity = velocityWhenPaused;
             // This will wake up the rigid body
             rb.WakeUp();
@@ -121,46 +131,49 @@ public class Movement : MonoBehaviour {
     /// </summary>
     public void WrapAroundScreen()
     {
-        position = transform.position;
+        // Get the current position of this object
+        currentPosition = transform.position;
 
-        Vector3 viewportPosition = Camera.main.WorldToViewportPoint(position);
+        // Get the camera postiion of this object with WorldToViewport
+        Vector3 viewportPosition = Camera.main.WorldToViewportPoint(currentPosition);
 
         // Check the Y 
-        if (viewportPosition.y > 1)
+        if (viewportPosition.y > 1) // Past the top of the screen
         {
-            position.y = -position.y + wrapPadding;
-            // Having this set transform statement will make it so that I only have to call it when I
-            // know that I moved this object. This will reduce the number of times that this method
-            // is called.
-            transform.position = position;
+            currentPosition.y = -currentPosition.y + wrapPadding;
+            transform.position = currentPosition;
         }
-        if (viewportPosition.y < 0)
+        if (viewportPosition.y < 0)   // Past the bottom of the screen
         {
-            position.y = -position.y - wrapPadding;
-            transform.position = position;
+            currentPosition.y = -currentPosition.y - wrapPadding;
+            transform.position = currentPosition;
         }
 
-        // Check the X
-        if (viewportPosition.x > 1)
+        // Check the X positoin
+        if (viewportPosition.x > 1) // Past the right of the screen
         {
-            position.x = -position.x + wrapPadding;
-            transform.position = position;
+            currentPosition.x = -currentPosition.x + wrapPadding;
+            transform.position = currentPosition;
         }
-        if (viewportPosition.x < 0)
+        if (viewportPosition.x < 0) // Past the left of the screen
         {
-            position.x = -position.x - wrapPadding;
-            transform.position = position;
+            currentPosition.x = -currentPosition.x - wrapPadding;
+            transform.position = currentPosition;
         }
 
     }
 
     /// <summary>
-    /// Loop through our attracted forces and add to our move force each one
+    /// Loop through the black holes in the scene and add attraction force to everything
     /// </summary>
-    public Vector2 CalculateAttractions(Vector2 currentVelocity)
+    /// <returns>The total attraction force towards all black holes</returns>
+    public Vector2 CalculateAttractions()
     {
-        velocity = currentVelocity;
-        Vector2 attractionForce = Vector3.zero;
+        // Set the current velocity to the rididbody velocity 
+        velocity = rb.velocity;
+
+        // Create a new Vector 2 attraction force
+        attractionForce = Vector2.zero;
 
         // how many things do we want to be attracted towards?
         int count = BlackHoleManager.currentBlackHoles.BlackHoles.Count;
@@ -174,53 +187,28 @@ public class Movement : MonoBehaviour {
                 * seekWeight * BlackHoleManager.currentBlackHoles.BlackHoles[i].Size;
         }
 
-        // Flee from all the ojbects that we want to avoid
-
+        // Return the calculated attraction force to all the black hoels
         return attractionForce;
     }
 
     /// <summary>
-    /// Author: Ben Hoffman
-    /// Purpose of method: To calculate the steering force
+    /// Calculate a steering force that will seek the given target
     /// </summary>
     /// <param name="targetPos">The target position that we want to seek</param>
-    /// <returns> The steering force</returns>
+    /// <returns> The steering force what should be applied to the velocity, scaled to max speed</returns>
     public Vector2 Seek(Vector2 targetPos)
     {
         // Calculate desired velocity
-        desiredVelocity = (targetPos - position);
+        desiredVelocity = (targetPos - currentPosition);
 
         // In order to get faster as we get closer, because the distance will get smaller, thus
         // resulting in a larger multiplier
         desiredVelocity *= (1 / desiredVelocity.magnitude);
 
-        // Scale the magnitude to teh max speed
-        // so that I move as quickly as possible
+        // Normalize this vector so that it is just a length of 1, and represents a direction
         desiredVelocity.Normalize();
 
-        desiredVelocity *= maxSpeed;
-
-        steeringForce = desiredVelocity - velocity;
-
-        // Calculate the steering force 
-        return steeringForce;
-    }
-
-    /// <summary>
-    /// Author: Ben Hoffman
-    /// Purpose of method: TO have this obejct flee from 
-    /// the given Vector3
-    /// </summary>
-    /// <param name="fleeingFromThis"></param>
-    /// <returns></returns>
-    private Vector2 Flee(Vector2 fleeingFromThis)
-    {
-        // Calculate desired velocity
-        desiredVelocity = position - fleeingFromThis;
-
-        // Scale the magnitude to teh max speed
-        // so that I move as quickly as possible
-        desiredVelocity.Normalize();
+        // Scale by max speed
         desiredVelocity *= maxSpeed;
 
         // Calculate the steering force 
@@ -228,6 +216,8 @@ public class Movement : MonoBehaviour {
         // Return the steering force
         steeringForce = desiredVelocity - velocity;
 
+        // Calculate the steering force 
         return steeringForce;
     }
+
 }

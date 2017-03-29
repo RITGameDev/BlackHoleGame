@@ -287,6 +287,11 @@ Prefab:
       propertyPath: m_MinVertexDistance
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114929720727370036, guid: 2a8927fc5f2cd4d439a1039b69ba6eb7,
+        type: 2}
+      propertyPath: playerWeight
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: 2a8927fc5f2cd4d439a1039b69ba6eb7, type: 2}
@@ -1579,6 +1584,16 @@ Prefab:
     - target: {fileID: 1220875079780804, guid: 2a8927fc5f2cd4d439a1039b69ba6eb7, type: 2}
       propertyPath: m_Name
       value: Player_1_Blue
+      objectReference: {fileID: 0}
+    - target: {fileID: 114929720727370036, guid: 2a8927fc5f2cd4d439a1039b69ba6eb7,
+        type: 2}
+      propertyPath: playerWeight
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114929720727370036, guid: 2a8927fc5f2cd4d439a1039b69ba6eb7,
+        type: 2}
+      propertyPath: seekWeight
+      value: 1.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2a8927fc5f2cd4d439a1039b69ba6eb7, type: 2}

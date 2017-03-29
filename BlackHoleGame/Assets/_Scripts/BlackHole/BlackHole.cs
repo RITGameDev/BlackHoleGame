@@ -98,7 +98,7 @@ public class BlackHole : Movement {
         moveForce += Seek(target) * forwardWeight;
 
         // Calculate the attraction forces and flee forces
-        moveForce += CalculateAttractions(rb.velocity);
+        moveForce += CalculateAttractions();
     }
 
     /// <summary>

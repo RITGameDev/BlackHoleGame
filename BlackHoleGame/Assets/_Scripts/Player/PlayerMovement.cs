@@ -74,7 +74,7 @@ public class PlayerMovement : Movement
         moveForce += Move();
 
         // Calculate the attraction forces and flee forces
-        moveForce += CalculateAttractions(rb.velocity) * currentDash;
+        moveForce += CalculateAttractions() * currentDash;
     }
 
     /// <summary>
@@ -86,6 +86,7 @@ public class PlayerMovement : Movement
         moveX = Input.GetAxis(horizontalInputString);
         moveY = Input.GetAxis(verticalInputString);
 
+        // Check if the player wants to dash
         if(Input.GetAxis(dashInputString) > 0 && timeSinceLastDash >= minTimeBetweenDashes)
         {
             StartCoroutine(UseDash());
