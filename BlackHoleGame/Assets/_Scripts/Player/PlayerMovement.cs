@@ -53,6 +53,7 @@ public class PlayerMovement : Movement
         timeSinceLastDash = minTimeBetweenDashes;
         trailRend = GetComponent<TrailRenderer>();
         trailRend.enabled = false;
+
     }
 
     /// <summary>
@@ -68,7 +69,7 @@ public class PlayerMovement : Movement
     /// Calculate the movement of the player
     /// </summary>
     public override void CalculateMovement()
-    {  
+    {
         // Do the movement calcluations
         moveForce += Move();
 

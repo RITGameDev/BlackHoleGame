@@ -20,6 +20,8 @@ public class AimRotation : MonoBehaviour {
     private Vector3 dir;
     private float angle;
     private Quaternion q;
+
+    private PlayerHealth ourHealth;
     #endregion
 
     /// <summary>
@@ -35,6 +37,9 @@ public class AimRotation : MonoBehaviour {
         // Set up the input strings
         horiz_input += playerNum.ToString();
         vert_input += playerNum.ToString();
+
+        // Get our health component
+        ourHealth = GetComponentInParent<PlayerHealth>();
     }
 
     /// <summary>
@@ -42,6 +47,9 @@ public class AimRotation : MonoBehaviour {
     /// </summary>
     void Update()
     {
+        // If we are head, then do nothing
+        if (ourHealth.IsDead || GameManager.gameManager.CurrentGameState != GameState.Playing) return;
+
         centerScreenPos = Camera.main.WorldToScreenPoint(center.position).normalized;
 
         yRot = Input.GetAxis(horiz_input) * 60f;

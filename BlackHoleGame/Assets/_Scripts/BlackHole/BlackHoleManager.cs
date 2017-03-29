@@ -19,6 +19,9 @@ public class BlackHoleManager : MonoBehaviour {
     public List<BlackHole> BlackHoles { get { return blackHoles;  } set { blackHoles = value; } }
     public ObjectPooler BlackHolesObjectPool { get { return blackHolesPool; } }
 
+    /// <summary>
+    /// Set up the current
+    /// </summary>
     private void Awake()
     {
         // Make sure that we are only have one of these in our scene

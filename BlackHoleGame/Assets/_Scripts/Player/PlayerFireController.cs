@@ -10,26 +10,33 @@ using UnityEngine;
 /// </summary>
 public class PlayerFireController : MonoBehaviour {
 
-    public Transform bulletSpawn;
+    public Transform bulletSpawn;   // The location that we want to spawn our bullet
     [SerializeField]
     private float fireRate = .5f;   // How much time is in between each shot at a minimum
 
     private ObjectPooler objPool;   // Our object pooler
     private float timeSinceLastFire = 0f;   // How long has it been since we have shot?
 
-    private string fireInput = "Fire";
+    private string fireInput = "Fire";      // The input string for this 
+
+    private PlayerHealth ourHealth;     // Our health component, so that when we are dead we don't do anything
 
 	/// <summary>
-    /// Get the reference to the object pooler
+    /// Get the reference to the object poole, set up the input string, and get the health componenet
     /// </summary>
 	void Start ()
     {
         // Get the reference to the object pooler
         objPool = BlackHoleManager.currentBlackHoles.BlackHolesObjectPool;
+
         // Set up the player number input
         int playerNum = GetComponentInParent<PlayerNumber>()._PlayerNumber;
-        // Set up the input strings
+
+        // Set up the input string byu adding the player number to it
         fireInput += playerNum.ToString();
+
+        // Get our health componenet
+        ourHealth = GetComponent<PlayerHealth>();
     }
 	
 	/// <summary>
@@ -38,6 +45,9 @@ public class PlayerFireController : MonoBehaviour {
     /// </summary>
 	void Update ()
     {
+        // If we are dead, then do nothing
+        if (ourHealth.IsDead || GameManager.gameManager.CurrentGameState != GameState.Playing) return;
+
         // If the player is giving input and the time since last fire is greater then the minimum we need...
         if (Input.GetAxis(fireInput) > 0f && timeSinceLastFire >= fireRate)
         {
@@ -53,13 +63,8 @@ public class PlayerFireController : MonoBehaviour {
             // Enable the black hole that we just shot
             bullet.GetComponent<BlackHole>().EnableBlackHole();
 
-            // Reset the size of the bullet
-            //bullet.GetComponent<BlackHole_Size>().CurrentSize = 1f;
             // The last time that we fired is now, so set the time since last fire to 0
             timeSinceLastFire = 0f;
-
-            // Make the controller vibrate?
-            
         }
         else
         {

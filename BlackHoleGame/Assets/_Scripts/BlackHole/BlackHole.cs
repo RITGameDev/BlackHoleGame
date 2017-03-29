@@ -22,6 +22,8 @@ public class BlackHole : Movement {
     private BlackHole_Size size;
 
     private Vector3 target;  // The object that we will move towards
+    private float timeSinceInvoke;  // This will be used to keep track of how long it has been since we started
+    private bool isAlive;
 
     #endregion
 
@@ -44,6 +46,8 @@ public class BlackHole : Movement {
 
         // Get the black holes size componenet
         size = GetComponent<BlackHole_Size>();
+        isAlive = false;
+        timeSinceInvoke = 0f;
     }
 
     /// <summary>
@@ -54,18 +58,34 @@ public class BlackHole : Movement {
         // Enable the collider
         size.enabled = true;
 
-        // Play the away animation
-        //anim.SetTrigger("MakeHole");
-
         // Add this object to the black hole manager
         BlackHoleManager.currentBlackHoles.BlackHoles.Add(this);
 
         // Make the target in front of us by the range
         target = transform.position + transform.up * range;
         // Make sure that we have no other invokes happeneing
-        CancelInvoke();
+        //CancelInvoke();
+        isAlive = true;
+        timeSinceInvoke = 0f;
         // Disable this obejct after the given lifetime
-        Invoke("DisableMe", lifetime);
+        //Invoke("DisableMe", lifetime);
+    }
+
+
+    private void Update()
+    {
+        // If we are playing that game and this black hole is alive OR the game is over....
+        if(GameManager.gameManager.CurrentGameState == GameState.Playing && isAlive || GameManager.gameManager.CurrentGameState == GameState.GameOver)
+        {
+            // Add the delta time to how long it has been since we were active
+            timeSinceInvoke += Time.deltaTime;
+            // If we have exceeded our lifetime...
+            if(timeSinceInvoke >= lifetime)
+            {
+                // Disable us
+                DisableMe();
+            }
+        }
     }
 
     /// <summary>
@@ -91,6 +111,8 @@ public class BlackHole : Movement {
 
         // Remove us from the list of black holes
         BlackHoleManager.currentBlackHoles.BlackHoles.Remove(this);
+
+        isAlive = false;
     }
 
     /// <summary>
@@ -99,8 +121,10 @@ public class BlackHole : Movement {
     /// </summary>
     public void ResetLifetime()
     {
-        CancelInvoke();
-        Invoke("DisableMe", lifetime);
+        //CancelInvoke();
+        //Invoke("DisableMe", lifetime);
+        timeSinceInvoke = 0f;
+        isAlive = true;
     }
 
 }
