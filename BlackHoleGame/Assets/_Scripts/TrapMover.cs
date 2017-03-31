@@ -4,11 +4,11 @@ using UnityEngine;
 
 /// <summary>
 /// Move this traps around the screen, attracting them towards the black holes
-/// and 
+/// Author: Ben hoffman
 /// </summary>
 public class TrapMover : Movement {
 
-    private Vector2 camLimits;
+    private Vector2 camLimits;  // The limits of the camera so that we know where to spawn these
 
     public override void Awake()
     {
@@ -40,7 +40,6 @@ public class TrapMover : Movement {
         {
             // Move us out off the screen
             ResetMovement();
-            // Play the animation of getting sucked in
         }
     }
 
@@ -52,18 +51,23 @@ public class TrapMover : Movement {
     /// </summary>
     private void ResetMovement()
     {
+        // Randomly determine if our movement veloicty wll me negatice or now
         int beNegative = Random.Range(0, 1);
 
         // Generate a ranbd
         float randomVal = 1 + Random.Range(0.5f, 0.7f);
+
         // Randomly make this negative
         if(beNegative != 0)
         {
+            // If we are supposed to be negative (50,50 cahnge) then multiply by -1
             randomVal *= -1f;
         }
 
+        // Create a new position for use to have that is somewhere outside of the screen space so that we float in from outside
         Vector3 v3Pos = Camera.main.ViewportToWorldPoint(new Vector3(1.5f + randomVal, 1.5f + randomVal, 0f));
 
+        // Set our position to the new calcualted position
         transform.position = v3Pos;
     }
 }

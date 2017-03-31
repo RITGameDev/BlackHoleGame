@@ -23,7 +23,7 @@ public class ScoreKeeper : MonoBehaviour
     private int _player_score_1;    // Current player 1 score
     private int _player_score_2;    // Current player 2 score
 
-    private bool _GameOver;
+    private bool _GameOver;     // Bool telling us if the game is over or not
 
 
     #endregion
@@ -49,8 +49,7 @@ public class ScoreKeeper : MonoBehaviour
         _player_score_1 = startLife;
         _player_score_2 = startLife;
 
-        Time.timeScale = 1f;
-
+        // The game is not over
         _GameOver = false;
     }
 
@@ -61,7 +60,7 @@ public class ScoreKeeper : MonoBehaviour
     /// <param name="scoreAmount">The amount of score that we want to add</param>
     public void AddScore(int playerNum, int scoreAmount)
     {
-        // Add to the score
+        // Remove a life from whatever player just died
         switch (playerNum)
         {
             case (1):
@@ -72,6 +71,9 @@ public class ScoreKeeper : MonoBehaviour
                 break;
             default:
                 // There is no player!!
+#if UNITY_EDITOR
+                Debug.Log("There was no player of index: " + playerNum.ToString());
+#endif
                 break;
         }
 

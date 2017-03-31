@@ -6,33 +6,35 @@ using UnityEngine.UI;
 /// <summary>
 /// This game manager will have a reference to anything that is moving
 /// moving 
+/// Author: Ben Hoffman
 /// </summary>
 public class GameManager : MonoBehaviour {
 
-    public static GameManager gameManager;
+    public static GameManager gameManager;  // Static reference to this object
 
     #region Fields
-    private GameState currentGameState;
+    private GameState currentGameState; // Current game state of the game
 
-    public int numberOfPlayers;
+    public int numberOfPlayers; // The number of players in the game
 
     // UI elements
-    public Text winningText;     // The winning text
-    public Button resetButton;
-    public Button quitButton;
-    public Button startButton;
+    public Text winningText;    // The winning text
+    public Button resetButton;  // The reset button
+    public Button quitButton;   // The quit button
+    public Button startButton;  // The start button
 
-
-    private BlackHoleManager blackHoleManager;
-    public UnityStandardAssets.ImageEffects.BlurOptimized camBlur;
+    public UnityStandardAssets.ImageEffects.BlurOptimized camBlur;  // The camera blur effect for the menu
 
     public GameState CurrentGameState { get { return currentGameState; } }
     #endregion
 
 
-    // I need to keep track of all things that are moving
-
-    // Use this for initialization
+    /// <summary>
+    /// Set the game starte to the menu statemenu state,
+    /// set the static reference to this game manager object
+    /// so that other things can see the current state of the game.
+    /// Set our menu UI up. Enable camera blur for the menu efffect
+    /// </summary>
     void Awake ()
     {
         // Make sure tha thtis is the only one of these objects in the scene
@@ -52,14 +54,14 @@ public class GameManager : MonoBehaviour {
         startButton.gameObject.SetActive(true);
         quitButton.gameObject.SetActive(true);
 
-        // Select the start button so that you can use the controller for UI
-        startButton.Select();
-
         // Make sure that the camera blur is on for the start menu
         camBlur.enabled = true;
 
     }
 
+    /// <summary>
+    /// Select the start button at the beginnging
+    /// </summary>
     void Start()
     {
         // Select the start button so that you can use the controller for UI
@@ -71,16 +73,19 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     void Update()
     {
+        // If the player presses escape or the start button on the controller...
         if (Input.GetButtonDown("Cancel"))
         {
             // If we are paused, then resume the game
             if(currentGameState == GameState.Paused)
             {
+                // Resume the game
                 PlayGame();
             }
             // If we are playing, then pause the game
             else if(currentGameState == GameState.Playing)
             {
+                // Pause the game
                 PauseGame();
             }
         }
@@ -93,10 +98,6 @@ public class GameManager : MonoBehaviour {
     {
         // The game state is not paused
         currentGameState = GameState.Paused;
-
-        // Stop allowing players to aim and shoot
-
-        // Stop the black hole lifetime counter
 
         // Show the pause/ start menu UI
         resetButton.gameObject.SetActive(true);
@@ -151,7 +152,8 @@ public class GameManager : MonoBehaviour {
 
 
     /// <summary>
-    /// Quit out of the applicatoin
+    /// Quit out of the applicatoin, this will be called from a quit button 
+    /// in the UI
     /// </summary>
     public void Quit()
     {
@@ -159,26 +161,11 @@ public class GameManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// Reset the current level
+    /// Reset the current level by reloading the level
     /// </summary>
     public void Reset()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(Application.loadedLevel);
-    }
-
-    /// <summary>
-    /// This coroutine will slowly reduce the timescale
-    /// so that the game ends it slows down
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator SlowDownTime()
-    {
-        while (Time.timeScale > 0.3)
-        {
-            Time.timeScale = Mathf.Lerp(Time.timeScale, 0f, Time.deltaTime);
-            yield return null;
-        }
-        Time.timeScale = 0f;
     }
 
 }

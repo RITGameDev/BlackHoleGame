@@ -49,17 +49,20 @@ public class PlayerFireController : MonoBehaviour {
         if (ourHealth.IsDead || GameManager.gameManager.CurrentGameState != GameState.Playing) return;
 
         // If the player is giving input and the time since last fire is greater then the minimum we need...
-        if (Input.GetAxis(fireInput) > 0f && timeSinceLastFire >= fireRate)
+        if (Input.GetAxis(fireInput) > 0.1f && timeSinceLastFire >= fireRate)
         {
             // ================= Fire a black hole ===================
             // Get a bullet object off of the object pooler
             GameObject bullet = objPool.GetPooledObject();
             // Set the position of the bullet to that of the spawn point
             bullet.transform.position = bulletSpawn.position;
+
             // Set the rotiation of the bullet to that of the spawn point
             bullet.transform.rotation = bulletSpawn.rotation;
+
             // Set the object as active
             bullet.SetActive(true);
+
             // Enable the black hole that we just shot
             bullet.GetComponent<BlackHole>().EnableBlackHole();
 

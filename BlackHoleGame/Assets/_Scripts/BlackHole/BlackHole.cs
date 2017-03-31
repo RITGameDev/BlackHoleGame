@@ -6,6 +6,7 @@ using UnityEngine;
 /// Add a forward force on enable on this object
 /// Require a Rigidbody2D component so that the GetComponent
 /// will always work
+/// Author: Ben Hoffman
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class BlackHole : Movement {
@@ -16,14 +17,15 @@ public class BlackHole : Movement {
     [SerializeField]        // Serialze field makes it so that we can see this field in the editor
     private float range = 1f;    // How much force we want to add to this
     [SerializeField]
-    private float forwardWeight = 10f;
+    private float seekWieght = 10f;  // How much weight we will have towards our original target
 
     // The current size component of this black hole object
     private BlackHole_Size size;
 
     private Vector3 target;  // The object that we will move towards
     private float timeSinceInvoke;  // This will be used to keep track of how long it has been since we started
-    private bool isAlive;
+    private bool isAlive;   // Bool determineint if this is alive or not
+    private Vector3 deadArea;
 
     #endregion
 
@@ -44,9 +46,15 @@ public class BlackHole : Movement {
         // Call the base movement 
         base.Awake();
 
+        deadArea = new Vector3(1000, 1000, 0);
+
         // Get the black holes size componenet
         size = GetComponent<BlackHole_Size>();
+
+        // We are not alive to start
         isAlive = false;
+        
+        // It has been 0 seconds sine we have invoked this object
         timeSinceInvoke = 0f;
     }
 
@@ -63,12 +71,11 @@ public class BlackHole : Movement {
 
         // Make the target in front of us by the range
         target = transform.position + transform.up * range;
-        // Make sure that we have no other invokes happeneing
-        //CancelInvoke();
+
+        // We are alive
         isAlive = true;
+        // Time since we have invoked this object is now 0
         timeSinceInvoke = 0f;
-        // Disable this obejct after the given lifetime
-        //Invoke("DisableMe", lifetime);
     }
 
 
@@ -94,8 +101,8 @@ public class BlackHole : Movement {
     /// </summary>
     public override void CalculateMovement()
     {
-        // Seel our target
-        moveForce += Seek(target) * forwardWeight;
+        // Seek our target
+        moveForce += Seek(target) * seekWieght;
 
         // Calculate the attraction forces and flee forces
         moveForce += CalculateAttractions();
@@ -106,12 +113,13 @@ public class BlackHole : Movement {
     /// </summary>
     public void DisableMe()
     {
-        // Move us out of the way
-        transform.position = new Vector3(1000, 1000, 0f);
+        // Move us out of the way into the dead area
+        transform.position = deadArea;
 
         // Remove us from the list of black holes
         BlackHoleManager.currentBlackHoles.BlackHoles.Remove(this);
-
+        
+        // Set this object as dead
         isAlive = false;
     }
 
@@ -121,9 +129,9 @@ public class BlackHole : Movement {
     /// </summary>
     public void ResetLifetime()
     {
-        //CancelInvoke();
-        //Invoke("DisableMe", lifetime);
+        // The time since we have invoked this object is 0
         timeSinceInvoke = 0f;
+        // We are alive now
         isAlive = true;
     }
 

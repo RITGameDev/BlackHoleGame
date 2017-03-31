@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Generic method of pooling objects
+/// This will take a prefab and insantiate the pooled amount
+/// at the begining of the game, so that I do not need to 
+/// instantiate new objects every time I fire
+/// Author: Ben Hoffman
 /// </summary>
 public class ObjectPooler : MonoBehaviour
 {
@@ -12,7 +15,7 @@ public class ObjectPooler : MonoBehaviour
     public int pooledAmount = 20;       // How much we want to initially pool
     public bool willGrow = true;        // If true then this pooler will grow until it reaches the max value
 
-    private List<GameObject> pooledObjects;
+    private List<GameObject> pooledObjects;  // List of pooled object
 
     /// <summary>
     /// Instantiate the pool list, and create all of the prefabs into that list

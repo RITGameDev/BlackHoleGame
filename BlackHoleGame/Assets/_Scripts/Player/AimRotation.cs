@@ -8,10 +8,11 @@ using UnityEngine;
 public class AimRotation : MonoBehaviour {
 
     #region  Fields
-    private string horiz_input = "RS_HORIZ_";
+    private string horiz_input = "RS_HORIZ_";   // Input axis names for the right stick 
     private string vert_input = "RS_VERT_";
 
     public Transform center;
+
     private Vector3 v;
 
     // Used for calculations
@@ -21,7 +22,7 @@ public class AimRotation : MonoBehaviour {
     private float angle;
     private Quaternion q;
 
-    private PlayerHealth ourHealth;
+    private PlayerHealth ourHealth; // A reference to our health so that we can check if we are dead or not
     #endregion
 
     /// <summary>
@@ -50,11 +51,14 @@ public class AimRotation : MonoBehaviour {
         // If we are head, then do nothing
         if (ourHealth.IsDead || GameManager.gameManager.CurrentGameState != GameState.Playing) return;
 
+        // Get the screen point of the center of the screeen
         centerScreenPos = Camera.main.WorldToScreenPoint(center.position).normalized;
 
+        // Get player inpput from the joysticks
         yRot = Input.GetAxis(horiz_input) * 60f;
         xRot = -Input.GetAxis(vert_input) * 45f;
 
+        // Create an input vector based on the playe rinput that we have
         Vector3 INPUT = new Vector3(yRot, xRot, 0F);
         
         // If we are not giving input then ditch this
@@ -62,11 +66,16 @@ public class AimRotation : MonoBehaviour {
         {
             return;
         }
+        // Our directino is our input minus the center of the screen poition
         dir =  INPUT - centerScreenPos;
 
+        // Calculate the angle that we should be facing
         angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+        // Create a quaterionon based on that angle
         q = Quaternion.AngleAxis(angle, Vector3.forward);
+        // Set our position 
         transform.position = center.position + q * v;
+        // Set our rotiation
         transform.rotation = q;
     }
 }
